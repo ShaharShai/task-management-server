@@ -9,7 +9,20 @@ const io = require("socket.io");
 
 const mongoose = require("mongoose");
 
-const DBurl = "mongodb://127.0.0.1:27017";
+const database = (module.exports = () => {
+  const connectionParams = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+  try {
+    mongoose.connect("mongodb+srv://shahar3s:Shahar04845@tasksmanagement.0uao1uh.mongodb.net/",
+    connectionParams)
+    console.log("mongodb connection !")
+  } catch (err) {
+    console.log("mongodb connection error" + err.message)
+  }
+}) 
+
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -67,8 +80,7 @@ ioServer.on("connection", (socket) => {
   })
 
   socket.on("onTaskDone", async (task) => {
-    // socket.emit("taskDone", task);
-    // socket.broadcast.emit('taskDone', task);
+
     try{
       const updatedTask = await Task.findOneAndUpdate(
         { _id: task._id },
@@ -92,14 +104,10 @@ ioServer.on("connection", (socket) => {
   });
 });
 
-mongoose
-  .connect(DBurl)
-  .then(() => {
-    console.log("connected to database");
+
+    database();
 
     const server = httpServer.listen(5050, function () {
       const port = server.address().port;
       console.log("server listening on port", port);
     });
-  })
-  .catch((err) => console.log(err));
