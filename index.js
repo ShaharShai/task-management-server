@@ -29,7 +29,7 @@ const httpServer = http.createServer(app);
 
 const ioServer = io(httpServer, {
   cors: {
-    origin: ["http://localhost:4200"],
+    origin: ["http://localhost:4200, https://task-management-app-qwdl.onrender.com/task-management-app/"],
   },
 });
 
